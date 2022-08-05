@@ -1,0 +1,121 @@
+/*
+  Collection of I2C routines used in the PackMonitor project.
+  (C) 2022 Gordon "gordonthree" McLellan
+  Created August, 2022
+*/
+
+#include <Arduino.h>
+#include <Wire.h>
+#include "packmonlib.h"
+
+PackMonLib::PackMonLib() {
+  // constructor does nothing
+};
+
+void PackMonLib::i2cWriteUL(uint8_t slaveAddress, uint8_t cmdAddress, uint32_t cmdData) {
+  // Uint32Buff txbuffer;
+  char txbuffer[15];
+  sprintf(txbuffer, "%lu", cmdData);
+  Wire.beginTransmission(slaveAddress);               // begin transaction with slave address
+  Wire.write(0x60);                                   // send register address byte
+  Wire.write(txbuffer);                                // send bytes
+  Wire.endTransmission(true);                         // end transaction with a stop
+  // sprintf(buff, "Wrote %s to slave 0x%X at address 0x%X", txbuffer, slaveAddress, cmdAddress);
+  // telnet.println(buff);
+}
+
+float PackMonLib::i2cReadF(uint8_t slaveAddress, uint8_t cmdAddress) {
+  // uint8_t byteCnt = 0;
+  uint8_t readBytes = 5;
+  char rxBuffer[20];
+  float theResult = 0.0;
+  char stopChar = '\0';                             // unix null char
+  Wire.beginTransmission(slaveAddress);             // start transaction
+  Wire.write(cmdAddress);                                 // tell slave we want to read this register
+  Wire.endTransmission(false);                      // send instruction, retain control of bus
+  Wire.requestFrom(slaveAddress, readBytes, (bool) true);     // request 6 bytes from slave device and then release bus
+  Wire.readBytesUntil(stopChar, rxBuffer, readBytes);   // read five bytes or until the first null
+
+  theResult = strtod(rxBuffer, NULL);
+
+  return theResult;
+}
+
+uint32_t PackMonLib::i2cReadUL(uint8_t slaveAddress, uint8_t cmdAddress) {
+  char      rxBuffer[20];
+  char      stopChar  = '\0';                             // unix null char
+  uint8_t   readBytes = 11;
+  uint32_t  theResult = 0.0;
+  Wire.beginTransmission(slaveAddress);             // start transaction
+  Wire.write(cmdAddress);                                 // tell slave we want to read this register
+  Wire.endTransmission(false);                      // send instruction, retain control of bus
+  Wire.requestFrom(slaveAddress, readBytes, (bool) true);     // request 6 bytes from slave device and then release bus
+  Wire.readBytesUntil(stopChar, rxBuffer, readBytes);   // read five bytes or until the first null
+  // telnet.println(rxBuffer);
+  theResult = strtoul(rxBuffer, NULL, 10);
+  
+  return theResult;
+}
+
+long PackMonLib::i2cReadI(int slaveAddress, int cmdAddress) {
+    // uint8_t byteCnt = 0;
+  uint8_t readBytes = 5;
+  char rxBuffer[20];
+  long theResult = 0.0;
+  char stopChar = '\0';                                       // unix null char
+  Wire.beginTransmission(slaveAddress);                       // start transaction
+  Wire.write(cmdAddress);                                     // tell slave we want to read this register
+  Wire.endTransmission(false);                                // send instruction, retain control of bus
+  Wire.requestFrom(slaveAddress, readBytes, (bool) true);     // request bytes from slave device and then release bus
+  Wire.readBytesUntil(stopChar, rxBuffer, readBytes);         // read bytes or until the first null
+
+  theResult = strtol(rxBuffer, NULL, 10);
+
+  return theResult;
+}
+
+float PackMonLib::i2cReadFloat(int slaveAddress, int cmdAddress) {
+  union floatArray buffer;
+  const char stopChar = '\0';
+  const uint8_t readBytes = 4;
+  Wire.beginTransmission(slaveAddress);                          // start transaction
+  Wire.endTransmission(false);                                   // send instruction, retain control of bus
+  Wire.write(cmdAddress);                                        // tell slave we want to read this register
+  Wire.requestFrom(slaveAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
+  Wire.readBytesUntil(stopChar, buffer.byteArray , readBytes);    // read five bytes or until the first null
+
+  return buffer.floatNumber;
+}
+
+uint32_t PackMonLib::i2cReadUlong(int slaveAddress, int cmdAddress) {
+  union ulongArray buffer;
+  const char stopChar = '\0';
+  const uint8_t readBytes = 4;
+  Wire.beginTransmission(slaveAddress);                          // start transaction
+  Wire.endTransmission(false);                                   // send instruction, retain control of bus
+  Wire.write(cmdAddress);                                        // tell slave we want to read this register
+  Wire.requestFrom(slaveAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
+  Wire.readBytesUntil(stopChar, buffer.byteArray , readBytes);    // read five bytes or until the first null
+
+  return buffer.longNumber;
+}
+
+void PackMonLib::i2cWriteFloat(int slaveAddress, int cmdAddress, float cmdData) {
+  union floatArray buffer;
+  const uint8_t writeBytes = 4;
+  buffer.floatNumber = cmdData;                       // convert float into byte array 
+  Wire.beginTransmission(slaveAddress);               // begin transaction with slave address
+  Wire.write(0x60);                                   // send register address byte
+  Wire.write(buffer.byteArray, writeBytes);           // write bytes to buffer
+  Wire.endTransmission(true);                         // send data
+}
+
+void PackMonLib::i2cWriteUlong(int slaveAddress, int cmdAddress, uint32_t cmdData) {
+  union floatArray buffer;
+  const uint8_t writeBytes = 4;
+  buffer.floatNumber = cmdData;                       // convert ulong into byte array 
+  Wire.beginTransmission(slaveAddress);               // begin transaction with slave address
+  Wire.write(0x60);                                   // send register address byte
+  Wire.write(buffer.byteArray, writeBytes);           // write bytes to buffer
+  Wire.endTransmission(true);                         // send data
+}
