@@ -5,8 +5,8 @@
 */
 
 #pragma once
-#ifndef packmon-lib
-#define packmon-lib_h
+#ifndef packmonlib_h
+#define packmonlib_h
 
 #include <Arduino.h>
 #include <Wire.h>
