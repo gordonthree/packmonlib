@@ -12,13 +12,6 @@ PackMonLib::PackMonLib() {
   // constructor does nothing
 };
 
-
-
-
-
-
-
-
 float PackMonLib::i2cReadFloat(int slaveAddress, int cmdAddress) {
   union floatArray buffer;
   const char stopChar = '\0';
@@ -45,7 +38,7 @@ uint32_t PackMonLib::i2cReadUlong(int slaveAddress, int cmdAddress) {
   return buffer.longNumber;
 }
 
-uint32_t PackMonLib::i2cReadLong(int slaveAddress, int cmdAddress) {
+int32_t PackMonLib::i2cReadLong(int slaveAddress, int cmdAddress) {
   union longArray buffer;
   const char stopChar = '\0';
   const uint8_t readBytes = 4;
