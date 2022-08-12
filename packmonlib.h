@@ -44,8 +44,8 @@ class PackMonLib {
             uint8_t byteArray[4];
         } dbuffer;
 
-        const uint8_t writeBytes = 4;
-        const uint8_t readBytes  = 4;
+        static const uint8_t writeBytes = 4;
+        static const uint8_t readBytes  = 4;
 
 };
 
