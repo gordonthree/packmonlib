@@ -12,70 +12,74 @@ PackMonLib::PackMonLib() {
   // constructor does nothing
 };
 
-float PackMonLib::i2cReadFloat(int slaveAddress, int cmdAddress) {
-  union floatArray buffer;
-  const char stopChar = '\0';
-  const uint8_t readBytes = 4;
+double PackMonLib::readFloat(int clientAddress, int cmdAddress) { // rad four bytes return float
   Wire.beginTransmission(slaveAddress);                          // start transaction
   Wire.write(cmdAddress);                                        // tell slave we want to read this register
   Wire.endTransmission(false);                                   // send instruction, retain control of bus
-  Wire.requestFrom(slaveAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
-  Wire.readBytesUntil(stopChar, buffer.byteArray , readBytes);    // read five bytes or until the first null
+  Wire.requestFrom(clientAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
+  Wire.readBytes(dbuffer.byteArray, readBytes);    // read five bytes or until the first null
 
-  return buffer.floatNumber;
+  return dbuffer.longNumber;
 }
 
-uint32_t PackMonLib::i2cReadUlong(int slaveAddress, int cmdAddress) {
-  union ulongArray buffer;
-  const char stopChar = '\0';
-  const uint8_t readBytes = 4;
-  Wire.beginTransmission(slaveAddress);                          // start transaction
+uint32_t PackMonLib::readUlong(int clientAddress, int cmdAddress) { // read four bytes return Ulong
+  Wire.beginTransmission(clientAddress);                          // start transaction
   Wire.write(cmdAddress);                                        // tell slave we want to read this register
   Wire.endTransmission(false);                                   // send instruction, retain control of bus
-  Wire.requestFrom(slaveAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
-  Wire.readBytesUntil(stopChar, buffer.byteArray , readBytes);    // read five bytes or until the first null
+  Wire.requestFrom(clientAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
+  Wire.readBytes(ubuffer.byteArray, readBytes);    // read five bytes or until the first null
 
-  return buffer.longNumber;
+  return ubuffer.longNumber;
 }
 
-int32_t PackMonLib::i2cReadLong(int slaveAddress, int cmdAddress) {
-  union longArray buffer;
-  const char stopChar = '\0';
-  const uint8_t readBytes = 4;
-  Wire.beginTransmission(slaveAddress);                          // start transaction
+int32_t PackMonLib::readLong(int clientAddress, int cmdAddress) { // read four bytes return long
+  Wire.beginTransmission(clientAddress);                          // start transaction
   Wire.write(cmdAddress);                                        // tell slave we want to read this register
   Wire.endTransmission(false);                                   // send instruction, retain control of bus
-  Wire.requestFrom(slaveAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
-  Wire.readBytesUntil(stopChar, buffer.byteArray , readBytes);    // read five bytes or until the first null
+  Wire.requestFrom(clientAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
+  Wire.readBytes(lbuffer.byteArray, readBytes);    // read five bytes or until the first null
 
-  return buffer.longNumber;
+  return lbuffer.longNumber;
 }
 
-void PackMonLib::i2cWriteFloat(int slaveAddress, int cmdAddress, float cmdData) {
-  union floatArray buffer;
-  const uint8_t writeBytes = 4;
-  buffer.floatNumber = cmdData;                       // convert float into byte array 
-  Wire.beginTransmission(slaveAddress);               // begin transaction with slave address
-  Wire.write(cmdAddress);                                 // tell slave we want to read this register
-  Wire.write(buffer.byteArray, writeBytes);           // write bytes to buffer
+uint8_t PackMonLib::readByte(int clientAddress, int cmdAddress) { // read single byte
+  uint8_t dataByte = 0;
+  Wire.beginTransmission(clientAddress);                          // start transaction
+  Wire.write(cmdAddress);                                        // tell slave we want to read this register
+  Wire.endTransmission(false);                                   // send instruction, retain control of bus
+  Wire.requestFrom(clientAddress, 1, (bool) true);        // request 6 bytes from slave device and then release bus
+  Wire.readBytes(dataByte, 1);    // read five bytes or until the first null
+
+  return dataByte;
+}
+
+void PackMonLib::writeDouble(int clientAddress, int cmdAddress, double cmdData) {
+  dbuffer.floatNumber = cmdData;                      // convert float into byte array 
+  Wire.beginTransmission(clientAddress);               // begin transaction with slave address
+  Wire.write(cmdAddress);                                   // send register address byte
+  Wire.write(dbuffer.byteArray, writeBytes);           // write bytes to buffer
   Wire.endTransmission(true);                         // send data
 }
 
-void PackMonLib::i2cWriteUlong(int slaveAddress, int cmdAddress, uint32_t cmdData) {
-  union ulongArray buffer;                      // data conversion union
-  const uint8_t writeBytes = 4;                 // it's always 4 bytes
-  buffer.longNumber = cmdData;                  // convert ulong into byte array 
-  Wire.beginTransmission(slaveAddress);         // begin transaction with slave address
+void PackMonLib::writeUlong(int clientAddress, int cmdAddress, uint32_t cmdData) {
+  ubuffer.longNumber = cmdData;                  // convert ulong into byte array 
+  Wire.beginTransmission(clientAddress);         // begin transaction with slave address
   Wire.write(cmdAddress);                       // tell slave we want to read this register
-  Wire.write(buffer.byteArray, writeBytes);     // write bytes to buffer
+  Wire.write(ubuffer.byteArray, writeBytes);     // write bytes to buffer
   Wire.endTransmission(true);                   // send data
 }  
                     
-void PackMonLib::i2cWriteLong(int slaveAddress, int cmdAddress, int32_t cmdData) {
-  union longArray buffer;                      // data conversion union
-  const uint8_t writeBytes = 4;                 // it's always 4 bytes
+void PackMonLib::writeLong(int clientAddress, int cmdAddress, int32_t cmdData) {
+  lbuffer.longNumber = cmdData;                  // convert ulong into byte array 
+  Wire.beginTransmission(clientAddress);         // begin transaction with slave address
+  Wire.write(cmdAddress);                       // tell slave we want to read this register
+  Wire.write(lbuffer.byteArray, writeBytes);     // write bytes to buffer
+  Wire.endTransmission(true);                   // send data
+}  
+
+void PackMonLib::writeByte(int clientAddress, int cmdAddress, int32_t cmdData) {
   buffer.longNumber = cmdData;                  // convert ulong into byte array 
-  Wire.beginTransmission(slaveAddress);         // begin transaction with slave address
+  Wire.beginTransmission(clientAddress);         // begin transaction with slave address
   Wire.write(cmdAddress);                       // tell slave we want to read this register
   Wire.write(buffer.byteArray, writeBytes);     // write bytes to buffer
   Wire.endTransmission(true);                   // send data
