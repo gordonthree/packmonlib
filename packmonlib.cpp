@@ -12,7 +12,7 @@ PackMonLib::PackMonLib() {
   // constructor does nothing
 };
 
-double PackMonLib::readFloat(int clientAddress, int cmdAddress) { // rad four bytes return float
+double PackMonLib::readDouble(int clientAddress, int cmdAddress) { // rad four bytes return float
   Wire.beginTransmission(slaveAddress);                          // start transaction
   Wire.write(cmdAddress);                                        // tell slave we want to read this register
   Wire.endTransmission(false);                                   // send instruction, retain control of bus
@@ -44,43 +44,42 @@ int32_t PackMonLib::readLong(int clientAddress, int cmdAddress) { // read four b
 
 uint8_t PackMonLib::readByte(int clientAddress, int cmdAddress) { // read single byte
   uint8_t dataByte = 0;
-  Wire.beginTransmission(clientAddress);                          // start transaction
-  Wire.write(cmdAddress);                                        // tell slave we want to read this register
-  Wire.endTransmission(false);                                   // send instruction, retain control of bus
-  Wire.requestFrom(clientAddress, 1, (bool) true);        // request 6 bytes from slave device and then release bus
-  Wire.readBytes(dataByte, 1);    // read five bytes or until the first null
+  Wire.beginTransmission(clientAddress);            // start transaction
+  Wire.write(cmdAddress);                           // tell slave we want to read this register
+  Wire.endTransmission(false);                      // send instruction, retain control of bus
+  Wire.requestFrom(clientAddress, 1, (bool) true);  // request 6 bytes from slave device and then release bus
+  Wire.readBytes(dataByte, 1);                      // read five bytes or until the first null
 
   return dataByte;
 }
 
 void PackMonLib::writeDouble(int clientAddress, int cmdAddress, double cmdData) {
-  dbuffer.floatNumber = cmdData;                      // convert float into byte array 
-  Wire.beginTransmission(clientAddress);               // begin transaction with slave address
-  Wire.write(cmdAddress);                                   // send register address byte
-  Wire.write(dbuffer.byteArray, writeBytes);           // write bytes to buffer
-  Wire.endTransmission(true);                         // send data
+  dbuffer.floatNumber = cmdData;                     // convert float into byte array 
+  Wire.beginTransmission(clientAddress);             // begin transaction with slave address
+  Wire.write(cmdAddress);                            // send register address byte
+  Wire.write(dbuffer.byteArray, writeBytes);         // write bytes to buffer
+  Wire.endTransmission(true);                        // send data
 }
 
 void PackMonLib::writeUlong(int clientAddress, int cmdAddress, uint32_t cmdData) {
   ubuffer.longNumber = cmdData;                  // convert ulong into byte array 
   Wire.beginTransmission(clientAddress);         // begin transaction with slave address
-  Wire.write(cmdAddress);                       // tell slave we want to read this register
+  Wire.write(cmdAddress);                        // tell slave we want to read this register
   Wire.write(ubuffer.byteArray, writeBytes);     // write bytes to buffer
-  Wire.endTransmission(true);                   // send data
+  Wire.endTransmission(true);                    // send data
 }  
                     
 void PackMonLib::writeLong(int clientAddress, int cmdAddress, int32_t cmdData) {
   lbuffer.longNumber = cmdData;                  // convert ulong into byte array 
   Wire.beginTransmission(clientAddress);         // begin transaction with slave address
-  Wire.write(cmdAddress);                       // tell slave we want to read this register
+  Wire.write(cmdAddress);                        // tell slave we want to read this register
   Wire.write(lbuffer.byteArray, writeBytes);     // write bytes to buffer
-  Wire.endTransmission(true);                   // send data
+  Wire.endTransmission(true);                    // send data
 }  
 
-void PackMonLib::writeByte(int clientAddress, int cmdAddress, int32_t cmdData) {
-  buffer.longNumber = cmdData;                  // convert ulong into byte array 
-  Wire.beginTransmission(clientAddress);         // begin transaction with slave address
+void PackMonLib::writeByte(int clientAddress, int cmdAddress, int8_t cmdData) {
+  Wire.beginTransmission(clientAddress);        // begin transaction with slave address
   Wire.write(cmdAddress);                       // tell slave we want to read this register
-  Wire.write(buffer.byteArray, writeBytes);     // write bytes to buffer
+  Wire.write(cmdData);                          // write bytes to bus
   Wire.endTransmission(true);                   // send data
 }  
