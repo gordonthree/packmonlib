@@ -15,15 +15,15 @@ class PackMonLib {
     public:
         PackMonLib();
 
-        double   readDouble (int slaveAddress, int cmdAddress);
-        uint32_t readUlong  (int slaveAddress, int cmdAddress);
-        int32_t  readLong   (int slaveAddress, int cmdAddress);
-        uint8_t  readByte   (int slaveAddress, int cmdAddress);
+        double   readDouble (int clientAddress, int cmdAddress);
+        uint32_t readUlong  (int clientAddress, int cmdAddress);
+        int32_t  readLong   (int clientAddress, int cmdAddress);
+        uint8_t  readByte   (int clientAddress, int cmdAddress);
 
-        void     writeDouble(int slaveAddress, int cmdAddress, double cmdData) ;
-        void     writeUlong (int slaveAddress, int cmdAddress, uint32_t cmdData);
-        void     writeLong  (int slaveAddress, int cmdAddress, int32_t cmdData);
-        void     writeByte  (int slaveAddress, int cmdAddress, uint8_t cmdData);
+        void     writeDouble(int clientAddress, int cmdAddress, double cmdData) ;
+        void     writeUlong (int clientAddress, int cmdAddress, uint32_t cmdData);
+        void     writeLong  (int clientAddress, int cmdAddress, int32_t cmdData);
+        void     writeByte  (int clientAddress, int cmdAddress, uint8_t cmdData);
         
     private:
         union ulongArray
