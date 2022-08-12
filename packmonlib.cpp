@@ -13,7 +13,7 @@ PackMonLib::PackMonLib() {
 };
 
 double PackMonLib::readDouble(int clientAddress, int cmdAddress) { // rad four bytes return float
-  Wire.beginTransmission(slaveAddress);                          // start transaction
+  Wire.beginTransmission(clientAddress);                          // start transaction
   Wire.write(cmdAddress);                                        // tell slave we want to read this register
   Wire.endTransmission(false);                                   // send instruction, retain control of bus
   Wire.requestFrom(clientAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
