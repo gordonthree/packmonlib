@@ -9,7 +9,9 @@
 #include "packmonlib.h"
 
 PackMonLib::PackMonLib() {
-  // constructor does nothing
+// constructor does nothing
+  const uint8_t writeBytes = 4;
+  const uint8_t readBytes  = 4;
 };
 
 double PackMonLib::readDouble(int clientAddress, int cmdAddress) { // rad four bytes return float
