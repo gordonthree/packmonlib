@@ -23,7 +23,7 @@ class PackMonLib {
         void     writeDouble(int clientAddress, int cmdAddress, double cmdData) ;
         void     writeUlong (int clientAddress, int cmdAddress, uint32_t cmdData);
         void     writeLong  (int clientAddress, int cmdAddress, int32_t cmdData);
-        void     writeByte  (int clientAddress, int cmdAddress, uint8_t cmdData);
+        void     writeByte  (int clientAddress, int cmdAddress, int8_t cmdData);
         
     private:
         union ulongArray

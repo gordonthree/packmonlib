@@ -19,7 +19,7 @@ double PackMonLib::readDouble(int clientAddress, int cmdAddress) { // rad four b
   Wire.requestFrom(clientAddress, readBytes, (bool) true);        // request 6 bytes from slave device and then release bus
   Wire.readBytes(dbuffer.byteArray, readBytes);    // read five bytes or until the first null
 
-  return dbuffer.longNumber;
+  return dbuffer.floatNumber;
 }
 
 uint32_t PackMonLib::readUlong(int clientAddress, int cmdAddress) { // read four bytes return Ulong
@@ -48,7 +48,7 @@ uint8_t PackMonLib::readByte(int clientAddress, int cmdAddress) { // read single
   Wire.write(cmdAddress);                           // tell slave we want to read this register
   Wire.endTransmission(false);                      // send instruction, retain control of bus
   Wire.requestFrom(clientAddress, 1, (bool) true);  // request 6 bytes from slave device and then release bus
-  Wire.readBytes(dataByte, 1);                      // read five bytes or until the first null
+  dataByte = Wire.read();                           // read byte
 
   return dataByte;
 }
