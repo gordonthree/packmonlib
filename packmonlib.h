@@ -5,7 +5,7 @@
 */
 
 #pragma once
-#ifndef packmonlib_h
+#ifndef packmonlib
 #define packmonlib_h
 
 #include <Arduino.h>
@@ -24,26 +24,28 @@ class PackMonLib {
         void     i2cWriteUlong(int slaveAddress, int cmdAddress, uint32_t cmdData);
         void     i2cWriteLong (int slaveAddress, int cmdAddress, int32_t cmdData);
         void     i2cWriteByte (int slaveAddress, int cmdAddress, uint8_t cmdData);
-
+        
     private:
-        union longArray
-        {
-            int32_t  longNumber=0;
-            uint8_t  byteArray[4];
-        };
-
         union ulongArray
         {
             uint32_t longNumber=0;
             uint8_t  byteArray[4];
-        };
+        } ubuffer;
 
-        union floatArray
+        union longArray
         {
-            float   floatNumber=0.0;
-            uint8_t byteArray[4];
-        };
+            int32_t  longNumber=0;
+            uint8_t  byteArray[4];
+        } lbuffer;
 
+        union doubleArray
+        {
+            double  floatNumber=0.0;
+            uint8_t byteArray[4];
+        } dbuffer;
+
+        static const uint8_t writeBytes = 4;
+        static const uint8_t readBytes  = 4;
 
 };
 
